@@ -1,0 +1,137 @@
+databaseChangeLog:
+
+  - changeSet:
+
+      id: 1-create-users-tables
+      author: yers7
+      changes:
+
+        - createTable:
+
+            tableName: users
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: email
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: rol
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: idx_user_email
+            tableName: users
+            columns:
+              - column:
+                  name: email
+
+              
+  - changeSet:
+
+      id: 2-create-refresh-token-table
+      author: yers7
+      changes:
+
+        - createTable:
+
+            tableName: refresh_token
+
+            columns:
+
+            - column:
+                name: id
+                type: UUID
+                constraints: 
+                  primaryKey: true
+                  nullable: false
+                  unique: true
+
+            - column:
+                name: token
+                type: VARCHAR(255)
+                constraints:
+                  nullable: false
+                  unique: true
+
+            - column:
+                name: user_id
+                type: BIGINT
+                constraints:
+                  nullable: false
+
+            - column:
+                name: expires_at
+                type: TIMESTAMP 
+                constraints: 
+                  nullable: false
+
+            - column:
+                name: issue_at
+                type: TIMESTAMP
+                constraints:
+                  nullable: false
+
+            - column:
+                name: revoked
+                type: BOOLEAN
+                defaultValueBoolean: false
+                constraints:
+                  nullable: false
+
+            - column:
+                name: revoked_at
+                type: TIMESTAMP
+
+            - column:
+                name: family_id
+                type: UUID
+                constraints:
+                  nullable: false
+
+            - column:
+                name: replace_by_token_id
+                type: UUID
+
+        - addForeignKeyConstraint:
+            baseTableName: refresh_token
+            baseColumnNames: user_id
+            constraintName: fk_refresh_token_user
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createIndex:
+            indexName: idx_refresh_token_user
+            tableName: refresh_token
+            columns:
+              - column:
+                  name: user_id
+
+             
