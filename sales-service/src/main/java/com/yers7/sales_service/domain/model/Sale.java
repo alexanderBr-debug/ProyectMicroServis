@@ -1,45 +1,78 @@
 package com.yers7.sales_service.domain.model;
 
+
+
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.yers7.sales_service.domain.enums.SaleStatus;
+import com.yers7.sales_service.domain.exception.DomainException;
+import com.yers7.sales_service.domain.valueobject.CustomerId;
+import com.yers7.sales_service.domain.valueobject.Money;
+import com.yers7.sales_service.domain.valueobject.SaleId;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter 
 @Getter 
-@Builder 
-@NoArgsConstructor 
-@AllArgsConstructor
 public class Sale {
-
-    private UUID id;
-    private String clientId;
-    private List<SaleItem> items;
-    private BigDecimal totalAmount;
+    private final SaleId id;
+    private final CustomerId customerId;
+    private final List<SaleItem> items;
+    private final Money totalAmount;
+    private final Instant createdAt;
+    
     private SaleStatus status;
-    private Instant createdAt;
+    private String cancellationReason;
 
-    public static Sale createPendig(String clientId,List<SaleItem> items){
-
-        return Sale.builder()
-        .id(UUID.randomUUID())
-        .clientId(clientId)
-        .createdAt(Instant.now())
-        .items(items)
-        .status(SaleStatus.PENDING)
-        .totalAmount(calculateTotal(items))
-        .build();
+    // Constructor privado. Forzamos el uso de un Factory Method.
+    private Sale(SaleId id, CustomerId customerId, List<SaleItem> items, Money totalAmount, Instant createdAt, SaleStatus status) {
+        this.id = id;
+        this.customerId = customerId;
+        this.items = items;
+        this.totalAmount = totalAmount;
+        this.createdAt = createdAt;
+        this.status = status;
     }
 
-    public static BigDecimal calculateTotal(List<SaleItem> items){
-        return items.stream()
-        .map(SaleItem::getSubTotal)
-        .reduce(BigDecimal.ZERO,BigDecimal::add);
+    // Factory Method: El único punto de entrada para crear una nueva venta
+    public static Sale createPending(SaleId id, CustomerId customerId, List<SaleItem> items) {
+        if (items == null || items.isEmpty()) {
+            throw new DomainException("it must have at least one product");
+        }
+
+        Money total = items.stream()
+                .map(SaleItem::calculateSubTotal)
+                .reduce(new Money(BigDecimal.ZERO, "USD"), Money::add);
+
+        return new Sale(id, customerId, items, total, Instant.now(), SaleStatus.PENDING);
     }
+
+
+
+    public void approve() {
+        if (this.status != SaleStatus.PENDING) {
+            throw new DomainException("only sales in pending status can be approved. Current status: " + this.status);
+        }
+        this.status = SaleStatus.APPROVED;
+    }
+
+    public void cancel(String reason) {
+        if (this.status == SaleStatus.CANCELLED) {
+            throw new DomainException("the sale has already been cancelladA");
+        }
+        if (this.status == SaleStatus.APPROVED) {
+            throw new DomainException("A sale that has already been approved and shipped cannot be cancelled");
+        }
+        this.status = SaleStatus.CANCELLED;
+        this.cancellationReason = reason;
+    }
+
+
+    public List<SaleItem> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+    
+   
 }

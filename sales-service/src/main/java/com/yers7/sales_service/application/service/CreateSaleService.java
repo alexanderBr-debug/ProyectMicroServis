@@ -1,47 +1,69 @@
 package com.yers7.sales_service.application.service;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import com.yers7.sales_service.application.ports.in.CreateSaleUseCase;
+
 import com.yers7.sales_service.application.ports.out.ProductClientPort;
 import com.yers7.sales_service.application.ports.out.SaleEventPublisherPort;
 import com.yers7.sales_service.application.ports.out.SaleRepositoryPort;
-import com.yers7.sales_service.domain.exception.InsufficientStockException;
+import com.yers7.sales_service.domain.exception.DomainException;
 import com.yers7.sales_service.domain.model.Sale;
 import com.yers7.sales_service.domain.model.SaleItem;
+import com.yers7.sales_service.domain.valueobject.CustomerId;
+import com.yers7.sales_service.domain.valueobject.Money;
+import com.yers7.sales_service.domain.valueobject.ProductId;
+import com.yers7.sales_service.domain.valueobject.SaleId;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor 
 public class CreateSaleService implements CreateSaleUseCase {
-
+    
     private final SaleRepositoryPort saleRepositoryPort;
     private final SaleEventPublisherPort saleEventPublisherPort;
-    private final ProductClientPort  productClientPort;
+    private final ProductClientPort productClientPort;
+
+    public CreateSaleService(
+            SaleRepositoryPort saleRepositoryPort,
+            SaleEventPublisherPort saleEventPublisherPort,
+            ProductClientPort productClientPort
+    ) {
+        this.saleRepositoryPort = saleRepositoryPort;
+        this.saleEventPublisherPort = saleEventPublisherPort;
+        this.productClientPort = productClientPort;
+    }
 
     @Override
-    public Sale execute(String clientId,List<SaleItem> items) {
-        
-        
-        items.forEach(item -> {
+    public Sale execute(CreateSaleCommand command) {
+        SaleId saleId = new SaleId(UUID.randomUUID());
+        CustomerId customerId = new CustomerId(command.customerId());
 
-            BigDecimal realPrice = productClientPort.getProductPrice(item.getProductId());
-            item.setUnitPrice(realPrice);
-
-            Integer stock = productClientPort.getStock(item.getProductId().toString());
-
-            if (stock <= item.getQuantity()) {
-                throw new InsufficientStockException("stock insufficient");
-            }
-        });
-       
-        Sale newSale = Sale.createPendig(clientId, items);
       
-        Sale savedSale = saleRepositoryPort.save(newSale);
-    
+        List<SaleItem> items = command.items().stream()
+                .map(item -> {
+                    ProductId productId = new ProductId(UUID.fromString(item.productId()));
+                    
+                    boolean stockAvailable = productClientPort.hasEnoughStock(productId, item.quantity());
+                    if (!stockAvailable) {
+                        throw new DomainException("Stock insuficiente para el producto: " + item.productId());
+                    }
+
+                    return new SaleItem(
+                            productId,
+                            item.quantity(),
+                            new Money(item.unitPrice(), item.currency())
+                    );
+                })
+                .toList();
+
+  
+        Sale sale = Sale.createPending(saleId, customerId, items);
+
+        Sale savedSale = saleRepositoryPort.save(sale);
+
+
         saleEventPublisherPort.publishSaleCreated(savedSale);
 
         return savedSale;
     }
 }
+
