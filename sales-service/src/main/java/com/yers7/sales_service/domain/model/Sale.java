@@ -36,7 +36,7 @@ public class Sale {
         this.status = status;
     }
 
-    // Factory Method: El único punto de entrada para crear una nueva venta
+   
     public static Sale createPending(SaleId id, CustomerId customerId, List<SaleItem> items) {
         if (items == null || items.isEmpty()) {
             throw new DomainException("it must have at least one product");
