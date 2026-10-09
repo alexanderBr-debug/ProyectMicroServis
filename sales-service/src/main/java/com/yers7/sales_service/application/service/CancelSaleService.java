@@ -36,7 +36,7 @@ public class CancelSaleService implements CancelSaleUseCase {
        
         Sale updatedSale = saleRepositoryPort.save(sale);
 
-        // 4. Emitir evento de compensación / cancelación a Kafka
+        
         saleEventPublisherPort.publishSaleCancelled(updatedSale, reason);
     }
 }
