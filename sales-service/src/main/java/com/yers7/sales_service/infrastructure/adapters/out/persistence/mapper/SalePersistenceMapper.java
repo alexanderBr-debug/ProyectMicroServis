@@ -16,10 +16,10 @@ import com.yers7.sales_service.infrastructure.adapters.out.persistence.entity.Sa
 
 
     @Mapper(
-    componentModel = "spring", 
+    componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {SaleItemPersistenceMapper.class}, 
-    imports = {SaleId.class, CustomerId.class, Money.class, SaleStatus.class} 
+    uses = {SaleItemPersistenceMapper.class},
+    imports = {SaleId.class, CustomerId.class, Money.class, SaleStatus.class}
 )
 public interface SalePersistenceMapper {
 
@@ -30,11 +30,11 @@ public interface SalePersistenceMapper {
     @Mapping(target = "currency", source = "totalAmount.currency")
     SaleEntity toEntity(Sale sale);
 
-    // Método mágico de MapStruct para mantener la relación bidireccional de JPA
+    // Mapeo posterior para asignar la relación bidireccional de JPA a los items
     @AfterMapping
-    default void linkItems(@MappingTarget SaleEntity entity) {
-        if (entity.getItems() != null) {
-            entity.getItems().forEach(item -> item.setSale(entity));
+    default void linkItems(Sale sale, @MappingTarget SaleEntity saleEntity) {
+        if (saleEntity.getItems() != null) {
+            saleEntity.getItems().forEach(item -> item.setSale(saleEntity));
         }
     }
 

@@ -31,7 +31,7 @@ public class SalesController {
         this.mapper = mapper;
     }
 
-    @PostMapping
+    @PostMapping("/crete")
     public ResponseEntity<SaleResponse> createSale(@Valid @RequestBody CreateSaleRequest request) {
         log.info("Recibida petición HTTP para crear venta del cliente: {}", request.customerId());
 

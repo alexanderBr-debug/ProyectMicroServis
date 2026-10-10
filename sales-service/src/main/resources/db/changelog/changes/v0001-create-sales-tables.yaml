@@ -1,0 +1,110 @@
+databaseChangeLog:
+
+ - changeSet:
+    
+    id: 1-create-sales-table
+    author: yers7
+    changes:
+
+     - createTable:
+        
+        tableName: sales
+
+        columns:
+
+          - column:
+              name: id
+              type: UUID
+              constraints:
+                primaryKey: true
+                nullable: false
+                updatable: false
+
+          - column:
+              name: customer_id
+              type: VARCHAR(100)
+              constraints:
+                nullable: false
+
+          - column:
+              name: status
+              type: VARCHAR(100)
+              constraints:
+                nullable: false
+                length: 30
+
+          - column:
+              name: total_amount
+              type: NUMERIC(12,2)
+              constraints:
+                nullable: false
+                
+
+          - column:
+              name: currency
+              type: VARCHAR(10)
+              constraints:
+                nullable: false
+                length: 3
+
+          - column:
+              name: cancellation_reason
+              type: VARCHAR(100)
+
+          - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+     -  createTable:
+            tableName: sale_items
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: sale_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_sale_items_sale
+                    referencedTableName: sales
+                    referencedColumnNames: id
+
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: unit_price
+                  type: NUMERIC(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: currency
+                  type: VARCHAR(3)
+                  constraints:
+                    nullable: false
+
+
+
+
+          
+
+         
+
+  

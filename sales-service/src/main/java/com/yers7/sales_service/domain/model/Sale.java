@@ -13,9 +13,11 @@ import com.yers7.sales_service.domain.valueobject.CustomerId;
 import com.yers7.sales_service.domain.valueobject.Money;
 import com.yers7.sales_service.domain.valueobject.SaleId;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter 
+@AllArgsConstructor 
 public class Sale {
     private final SaleId id;
     private final CustomerId customerId;
@@ -41,6 +43,7 @@ public class Sale {
         if (items == null || items.isEmpty()) {
             throw new DomainException("it must have at least one product");
         }
+
 
         Money total = items.stream()
                 .map(SaleItem::calculateSubTotal)

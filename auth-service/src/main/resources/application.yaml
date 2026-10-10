@@ -1,39 +1,43 @@
 jwt: 
     secret: ${JWT_SECRET}
-    expiration: ${JWT_EXPIRATION}
+    expiration: ${JWT_EXPIRATION:86400000}
 
 spring:
   application:
     name: auth-service
     
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/auth_service
-    username: postgres
-    password: yers7
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    defer-datasource-initialization: true 
-    properties:
-      hibernate:
-        "[format_sql]": true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-    user-check-lock: true
     
+    
+
+datasource:
+  url: jdbc:postgresql://localhost:5432/auth_service
+  sername: postgres
+  password: yers7
+  driver-class-name: org.postgresql.Driver
+
+jpa:
+  hibernate:
+    ddl-auto: update
+  show-sql: true
+  defer-datasource-initialization: true 
+  properties:
+    hibernate:
+      "[format_sql]": true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+kafka:
+  bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+liquibase:
+  enabled: true
+  change-log: classpath:db/changelog/db.changelog-master.yaml
+  user-check-lock: true
+    
+server:
+  port: 8081
 
 
         
