@@ -40,7 +40,7 @@ public class CreateSaleService implements CreateSaleUseCase {
       
         List<SaleItem> items = command.items().stream()
                 .map(item -> {
-                    ProductId productId = new ProductId(UUID.fromString(item.productId()));
+                    ProductId productId = new ProductId(item.productId());
                     
                     boolean stockAvailable = productClientPort.hasEnoughStock(productId, item.quantity());
                     if (!stockAvailable) {

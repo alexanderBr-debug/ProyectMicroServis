@@ -1,4 +1,4 @@
-package com.yers7.product_service.objectValo;
+package com.yers7.product_service.objectValue;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

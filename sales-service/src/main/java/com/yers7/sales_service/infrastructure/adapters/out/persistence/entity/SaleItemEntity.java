@@ -25,7 +25,7 @@ public class SaleItemEntity {
     private SaleEntity sale;
 
     @Column(name = "product_id", nullable = false)
-    private UUID productId;
+    private String productId;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

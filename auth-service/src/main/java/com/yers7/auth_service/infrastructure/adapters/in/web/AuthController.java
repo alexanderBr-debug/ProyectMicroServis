@@ -18,10 +18,9 @@ import com.yers7.auth_service.infrastructure.adapters.in.web.dto.RegisterRequest
 import com.yers7.auth_service.infrastructure.adapters.in.web.mapper.AuthWebMapper;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RestController 
-@RequiredArgsConstructor 
+
 @RequestMapping ("/auth")
 public class AuthController {
     
@@ -29,6 +28,17 @@ public class AuthController {
     private final RegisterUseCase registerUseCase;
     private final ValidateTokenUseCase validateTokenUseCase;
     private final AuthWebMapper authWebMapper;
+
+    public AuthController(  LoginUseCase loginUseCase,
+    RegisterUseCase registerUseCase,
+    ValidateTokenUseCase validateTokenUseCase,
+    AuthWebMapper authWebMapper
+){ 
+    this.loginUseCase = loginUseCase;
+    this.registerUseCase = registerUseCase;
+    this.validateTokenUseCase = validateTokenUseCase;
+    this.authWebMapper = authWebMapper;
+}
 
     @PostMapping ("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest){

@@ -17,15 +17,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Component 
-@RequiredArgsConstructor 
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
 
     private final JwtTokenProviderAdapter jwtTokenProviderAdapter;
     private final UserDetailsService userDetailsService;
+
+    public JwtAuthenticationFilter(JwtTokenProviderAdapter jwtTokenProviderAdapter,UserDetailsService userDetailsService){
+        this.jwtTokenProviderAdapter = jwtTokenProviderAdapter;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override 
     protected  void doFilterInternal(@NonNull HttpServletRequest request,

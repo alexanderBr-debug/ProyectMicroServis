@@ -11,15 +11,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.yers7.auth_service.infrastructure.adapters.in.web.filter.JwtAuthenticationFilter;
 import com.yers7.auth_service.infrastructure.adapters.in.web.filter.RateLimitFilter;
 
-import lombok.RequiredArgsConstructor;
+
 
 @Configuration 
 @EnableWebSecurity 
-@RequiredArgsConstructor 
+
 public class SecurityConfig {
 
     private final RateLimitFilter rateLimitFilter;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(RateLimitFilter rateLimitFilter,JwtAuthenticationFilter jwtAuthenticationFilter){
+        this.rateLimitFilter = rateLimitFilter;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
     
     @Bean 
     public SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{

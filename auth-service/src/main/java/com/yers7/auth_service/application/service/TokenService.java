@@ -25,12 +25,12 @@ import com.yers7.auth_service.domain.model.TokenPair;
 import com.yers7.auth_service.domain.model.User;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 import lombok.Setter;
 
 @Setter 
 @Getter 
-@RequiredArgsConstructor 
+
 public class TokenService implements ValidateTokenUseCase  {
 
     private final UserEventPublisherPort userEventPublisherPort;
@@ -38,6 +38,16 @@ public class TokenService implements ValidateTokenUseCase  {
     private final TokenProviderPort tokenProviderPort;
     private static final SecureRandom secureRandom = new SecureRandom();
     
+    public TokenService(
+    UserEventPublisherPort userEventPublisherPort,
+    RefreshTokenRepositoryPort refreshTokenRepositoryPort,
+    TokenProviderPort tokenProviderPort){
+        this.tokenProviderPort = tokenProviderPort;
+        this.refreshTokenRepositoryPort = refreshTokenRepositoryPort;
+        this.userEventPublisherPort = userEventPublisherPort;
+    }
+
+   
 
    public String createRefreshToken(User user) {
         

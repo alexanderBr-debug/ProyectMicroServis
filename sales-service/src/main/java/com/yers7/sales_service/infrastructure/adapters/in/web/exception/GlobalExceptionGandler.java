@@ -9,6 +9,7 @@ import com.yers7.sales_service.domain.exception.AmountCannotBeNegativeException;
 import com.yers7.sales_service.domain.exception.CannotAddUpDifferentCurrenciesException;
 import com.yers7.sales_service.domain.exception.CustomerIsInvalidException;
 import com.yers7.sales_service.domain.exception.DomainException;
+import com.yers7.sales_service.domain.exception.ProductIdRequeridException;
 import com.yers7.sales_service.domain.exception.RequiredCurrencyException;
 import com.yers7.sales_service.domain.exception.SaleIdNotNullException;
 import com.yers7.sales_service.domain.exception.SaleNotFoundException;
@@ -58,6 +59,12 @@ public class GlobalExceptionGandler {
     public ResponseEntity<ErrorResponse> manejarSaleNotFound(SaleNotFoundException ex){
         ErrorResponse error = new ErrorResponse(ex.getMessage(),"SALE_NOT_FOUND" );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler (ProductIdRequeridException.class)
+    public ResponseEntity<ErrorResponse> manejarProductId(ProductIdRequeridException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), "REQUIRED_PRODUCT_ID");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     

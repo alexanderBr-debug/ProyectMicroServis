@@ -27,7 +27,7 @@ public class ProductClientAdapter implements ProductClientPort  {
         log.info("Consultando disponibilidad para producto {} en Product Service", productId);
         
         try {
-            ProductResponseDto product = feignClient.getProductById(productId.toString());
+            ProductResponseDto product = feignClient.getProductById(productId.value());
 
             if (product.availableStock() < quantity) {
                 log.warn("Stock insuficiente para el producto {}. Solicitado: {}, Disponible: {}",

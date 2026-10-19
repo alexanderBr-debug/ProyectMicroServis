@@ -12,8 +12,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.yers7.product_service.objectValo.ProductPrice;
-import com.yers7.product_service.objectValo.ProductStock;
+import com.yers7.product_service.objectValue.ProductPrice;
+import com.yers7.product_service.objectValue.ProductStock;
 
 
 import java.time.Instant;
@@ -44,7 +44,8 @@ public class ProductEntity {
     private ProductStock stock; // Stock físico disponible
 
     @Column(name = "reserved_stock", nullable = false)
-    private Integer reservedStock; // Stock apartado temporalmente (Saga)
+    @Builder.Default
+    private Integer reservedStock = 0; // Stock apartado temporalmente (Saga)
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
@@ -61,6 +62,28 @@ public class ProductEntity {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
-}
+
+
+    public boolean verificarStatus (int cantidadRequeridad){
+        
+      
+        if ( this.status == ProductStatus.DISCONTINUED || this.status == ProductStatus.OUT_OF_STOCK){
+            return false;
+        }
+
+        this.reservedStock += cantidadRequeridad;
+        int nuevoStock = this.stock.value() - cantidadRequeridad;
+        this.stock = new ProductStock(nuevoStock);
+       
+
+        if (nuevoStock == 0) {
+            this.status = ProductStatus.OUT_OF_STOCK;
+        }
+
+        return true;
+    }
+    
+    }
+
 
 

@@ -1,11 +1,17 @@
 package com.yers7.product_service.dto;
 
-import java.math.BigDecimal;
+
+
+
+import com.yers7.product_service.objectValue.ProductPrice;
+import com.yers7.product_service.objectValue.ProductStock;
+
 
 public record ProductResponseDto(
     Long id,
     String name,
-    BigDecimal price
+    ProductPrice price,
+    ProductStock stock
 ) {
     
 }

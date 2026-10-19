@@ -1,3 +1,45 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: product-service
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/product_service
+    username: postgres
+    password: yers7
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  kafka:
+    bootstrap-servers: kafka-yers:9092
+    consumer:
+      group-id: product-service-group-v3
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        "[spring.json.trusted.packages]": "*"
+        "[spring.json.type.mapping]": "com.yers7.sales_service.infrastructure.adapters.out.messaging.event.SaleCreatedEvent:com.yers7.product_service.messaging.dto.SaleCreatedEvent"
+
+        
+  
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    "[org.springframework.kafka]": DEBUG
+    "[org.apache.kafka.clients.consumer]": DEBUG
+

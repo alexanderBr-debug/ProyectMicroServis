@@ -16,18 +16,20 @@ import com.yers7.auth_service.application.ports.out.UserEventPublisherPort;
 import com.yers7.auth_service.application.ports.out.UserRepositoryPort;
 import com.yers7.auth_service.domain.exception.InvalidCredentialsException;
 import com.yers7.auth_service.domain.exception.UserAlreadyExistsException;
+import com.yers7.auth_service.domain.exception.UserNotExistingException;
 import com.yers7.auth_service.domain.model.RefreshToken;
 import com.yers7.auth_service.domain.model.Role;
 import com.yers7.auth_service.domain.model.TokenPair;
 import com.yers7.auth_service.domain.model.User;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 import lombok.Setter;
 
 @Getter 
 @Setter 
-@RequiredArgsConstructor 
+
+
 public class AuthService implements LoginUseCase,RegisterUseCase{
 
     private final UserRepositoryPort userRepositoryPort;
@@ -36,13 +38,23 @@ public class AuthService implements LoginUseCase,RegisterUseCase{
     private final UserEventPublisherPort userEventPublisherPort;
     private final RefreshTokenRepositoryPort refreshTokenRepositoryPort;
   
+   public AuthService(UserRepositoryPort userRepositoryPort,PasswordEncoderPort passwordEncoderPort,
+        TokenProviderPort tokenProviderPort,UserEventPublisherPort userEventPublisherPort,
+        RefreshTokenRepositoryPort refreshTokenRepositoryPort
+    ){
+        this.tokenProviderPort = tokenProviderPort;
+        this.userEventPublisherPort = userEventPublisherPort;
+        this.userRepositoryPort = userRepositoryPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.refreshTokenRepositoryPort = refreshTokenRepositoryPort;
+    }
    
 
     @Override 
     public TokenPair login(String email,String password){
 
         User user = userRepositoryPort.findByEmail(email)
-            .orElseThrow(() -> new UserAlreadyExistsException("exixting user in the database"));
+            .orElseThrow(() -> new UserNotExistingException(" Not exixting user in the database"));
     
 
         if(!passwordEncoderPort.matches(password,user.getPassword())){
@@ -65,7 +77,7 @@ public class AuthService implements LoginUseCase,RegisterUseCase{
 
         refreshTokenRepositoryPort.save(refreshTokenEncode);
 
-        return new TokenPair(accesstoken, refreshToken);    
+        return new TokenPair(accesstoken,refreshToken);
     }
 
     @Override 

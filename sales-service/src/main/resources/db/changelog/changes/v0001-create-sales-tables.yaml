@@ -78,7 +78,7 @@ databaseChangeLog:
 
               - column:
                   name: product_id
-                  type: UUID
+                  type: VARCHAR(100)
                   constraints:
                     nullable: false
 

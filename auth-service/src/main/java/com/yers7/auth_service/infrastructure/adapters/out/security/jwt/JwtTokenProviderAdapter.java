@@ -13,13 +13,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+
 
 @Component 
-@RequiredArgsConstructor 
+
 public class JwtTokenProviderAdapter implements TokenProviderPort {
 
      private final JwtProperties jwtProperties;
+
+     public JwtTokenProviderAdapter(JwtProperties jwtProperties){
+        this.jwtProperties = jwtProperties;
+     }
     
     
 

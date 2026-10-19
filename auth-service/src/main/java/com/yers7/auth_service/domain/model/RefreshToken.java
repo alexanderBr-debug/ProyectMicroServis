@@ -13,6 +13,20 @@ import lombok.Setter;
 @Builder 
 public class RefreshToken {
 
+   public RefreshToken(){
+    }
+
+   public RefreshToken(UUID id,String token,User user,Instant expiresAt,Instant issueAt,boolean revoked,Instant revokedAt,UUID familyId,UUID replaceByTokenId){
+        this.id = id;
+        this.token = token;
+        this.user = user;
+        this.expiresAt = expiresAt;
+        this.issueAt = issueAt;
+        this.revoked = revoked;
+        this.revokedAt = revokedAt;
+        this.familyId = familyId;
+        this.replaceByTokenId = replaceByTokenId;
+    }
     private UUID id;
     private String token;
     private User user;

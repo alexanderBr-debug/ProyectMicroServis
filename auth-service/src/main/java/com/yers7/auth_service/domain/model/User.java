@@ -13,6 +13,23 @@ import lombok.Setter;
 @Setter 
 @Builder 
 public class User {
+
+   public User(){}
+
+   public User( Long id,
+     String email,
+     String password,
+     Role rol,
+     Instant createdAt,
+     String name){
+        this.email = email;
+        this.id = id;
+        this.password = password;
+        this.rol = rol;
+        this.createdAt = createdAt;
+        this.name = name;
+     }
+
     private Long id;
     private String email;
     private String password;

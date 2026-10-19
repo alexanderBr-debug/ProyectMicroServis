@@ -5,13 +5,17 @@ import org.springframework.stereotype.Component;
 
 import com.yers7.auth_service.application.ports.out.PasswordEncoderPort;
 
-import lombok.RequiredArgsConstructor;
+
 
 @Component 
-@RequiredArgsConstructor 
+
 public class BcryptPasswordEncoderAdapter implements PasswordEncoderPort {
     
     private final PasswordEncoder passwordEncoder;
+
+    public BcryptPasswordEncoderAdapter(PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     

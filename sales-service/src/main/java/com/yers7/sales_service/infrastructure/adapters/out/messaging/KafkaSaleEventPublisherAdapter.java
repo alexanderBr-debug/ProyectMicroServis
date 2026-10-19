@@ -25,7 +25,7 @@ public class KafkaSaleEventPublisherAdapter implements SaleEventPublisherPort {
     public void publishSaleCreated(Sale sale) {
         List<SaleCreatedEvent.SaleItemEvent> items = sale.getItems().stream()
                 .map(item -> new SaleCreatedEvent.SaleItemEvent(
-                        item.getProductId().toString(),
+                        item.getProductId().value(),
                         item.getQuantity()
                 )).toList();
 
@@ -39,7 +39,7 @@ public class KafkaSaleEventPublisherAdapter implements SaleEventPublisherPort {
                         saleId,
                         sale.getCustomerId().value(),
                         sale.getTotalAmount().amount(),
-                        Instant.now(),
+                        Instant.now().toString(),
                         items
                 )
         );

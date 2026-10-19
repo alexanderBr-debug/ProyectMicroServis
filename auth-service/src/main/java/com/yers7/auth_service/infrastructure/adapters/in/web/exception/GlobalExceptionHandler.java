@@ -13,6 +13,7 @@ import com.yers7.auth_service.domain.exception.TokenNotFoundException;
 import com.yers7.auth_service.domain.exception.TokenReusedException;
 import com.yers7.auth_service.domain.exception.TokenRevokedException;
 import com.yers7.auth_service.domain.exception.UserAlreadyExistsException;
+import com.yers7.auth_service.domain.exception.UserNotExistingException;
 
 
 @RestControllerAdvice 
@@ -58,5 +59,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> manejarUserAlreadyExist(UserAlreadyExistsException ex){
         ErrorResponse error = new ErrorResponse(ex.getMessage(), "USER_ALREADY_EXIST");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler (UserNotExistingException.class)
+    public ResponseEntity<ErrorResponse> manejarUSerNotExisting(UserNotExistingException ex){
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), "USER_NOT_EXIST_DATABASE");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error);
     }
 }

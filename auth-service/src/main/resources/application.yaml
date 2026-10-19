@@ -23,7 +23,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    bootstrap-servers: kafka-yers:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -34,7 +34,7 @@ spring:
     user-check-lock: true
     
 server:
-  port: 8081
+  port: 8080
         
         
     

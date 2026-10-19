@@ -15,7 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/sales")
+@RequestMapping("/sales")
 public class SalesController {
 
     private static final Logger log = LoggerFactory.getLogger(SalesController.class);
@@ -31,7 +31,7 @@ public class SalesController {
         this.mapper = mapper;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<SaleResponse> createSale(@Valid @RequestBody CreateSaleRequest request) {
         log.info("Recibida petición HTTP para crear venta del cliente: {}", request.customerId());
 

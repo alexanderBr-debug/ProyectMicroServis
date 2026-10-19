@@ -16,13 +16,14 @@ import com.yers7.sales_service.infrastructure.adapters.out.persistence.entity.Sa
 )
 public interface SaleItemPersistenceMapper {
 
-    @Mapping(target = "sale", ignore = true)
-    @Mapping(target = "productId", source = "productId.id")
-    @Mapping(target = "unitPrice", source = "unitPrice.amount")
-    @Mapping(target = "currency", source = "unitPrice.currency")
-    SaleItemEntity toSaleItemEntity(SaleItem saleItem);
 
-    @Mapping(target = "productId", expression = "java(new ProductId(saleItemEntity.getProductId()))")
-    @Mapping(target = "unitPrice", expression = "java(new Money(saleItemEntity.getUnitPrice(), saleItemEntity.getCurrency()))")
-    SaleItem toDomain(SaleItemEntity saleItemEntity);
+@Mapping(target = "productId", source = "productId.value") 
+@Mapping(target = "unitPrice", source = "unitPrice.amount")
+@Mapping(target = "currency", source = "unitPrice.currency")
+SaleItemEntity toSaleItemEntity(SaleItem saleItem);
+
+@Mapping(target = "productId", expression = "java(new ProductId(saleItemEntity.getProductId()))") 
+@Mapping(target = "unitPrice", expression = "java(new Money(saleItemEntity.getUnitPrice(), saleItemEntity.getCurrency()))")
+SaleItem toDomain(SaleItemEntity saleItemEntity);
+
 }
